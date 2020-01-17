@@ -128,8 +128,12 @@ class Card
         raise ArgumentError, "'name' argument is not a valid cc = #{name.length}" unless name.length == 2
 
         @name = name;
-        @rank = CardRankFactory.strToRank(name[0, 1]);
         @suit = CardSuitFactory.strToSuit(name[1, 1]);
+        if @suit == CardSuit::CARD_SUIT_JOKER
+            @rank = CardRank::CARD_RANK_UNDEFINED;
+        else
+            @rank = CardRankFactory.strToRank(name[0, 1]);
+        end # if
     end # initialize
 
     def rank
