@@ -88,7 +88,7 @@ def test_Card(test)
         test.checkIfIntNE($card.rank, CardRank::CARD_RANK_UNDEFINED);
         test.checkIfIntNE($card.suit, CardSuit::CARD_SUIT_UNDEFINED);
     end # each
-end
+end # test_Card
 
 
 $testsList = Hash[
