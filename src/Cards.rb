@@ -110,6 +110,8 @@ module CardSuit
                 return CardSuit::CARD_SUIT_DIAMODS;
             when "S", "s"
                 return CardSuit::CARD_SUIT_SPADES;
+            when "J", "j"
+                return CardSuit::CARD_SUIT_JOKER;
             else
                 return CardSuit::CARD_SUIT_UNDEFINED;
         end # case
@@ -122,11 +124,12 @@ end # class CardSuitFactory
 
 class Card
     def initialize(name)
-        raise ArgumentError, '\'name\' argument is not a string' unless c.is_a? String
+        raise ArgumentError, '\'name\' argument is not a string' unless name.is_a? String
+        raise ArgumentError, "'name' argument is not a valid cc = #{name.length}" unless name.length == 2
+
         @name = name;
-        @rank = CardRankFactory.strToSuit(name[0, 1]);
+        @rank = CardRankFactory.strToRank(name[0, 1]);
         @suit = CardSuitFactory.strToSuit(name[1, 1]);
-        puts name
     end # initialize
 
     def rank

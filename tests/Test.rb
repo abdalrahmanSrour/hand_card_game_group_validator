@@ -30,8 +30,6 @@ class SR_Test
     end # def addTest
 
     def checkIf(op, line = __LINE__, file = __FILE__)
-        raise ArgumentError, '\'op\' argument is not a string' unless op.is_a? boolean
-
         if !op
             puts "Check if fail in #{file}:#{line}"
             puts "operation is false"
@@ -52,9 +50,9 @@ class SR_Test
             raise SR_CheckError, "checkIfNumEQ failed"
         end # if
         @num_of_checks += 1;
-    end # def testEQ
+    end # def checkIfIntEQ
 
-    def testIfIntNE(a, b, line = __LINE__, file = __FILE__)
+    def checkIfIntNE(a, b, line = __LINE__, file = __FILE__)
         raise ArgumentError, '\'a\' argument is not an Integer' unless a.is_a? Integer
         raise ArgumentError, '\'b\' argument is not an Integer' unless b.is_a? Integer
 
@@ -65,9 +63,9 @@ class SR_Test
             raise SR_CheckError, "checkIfNumEQ failed"
         end # if
         @num_of_checks += 1;
-    end # def testEQ
+    end # def checkIfIntNE
 
-    def testIfStrEQ(a, b, line = __LINE__, file = __FILE__)
+    def checkIfStrEQ(a, b, line = __LINE__, file = __FILE__)
         raise ArgumentError, '\'a\' argument is not a String' unless a.is_a? String
         raise ArgumentError, '\'b\' argument is not a String' unless b.is_a? String
 
@@ -78,9 +76,9 @@ class SR_Test
             raise SR_CheckError, "checkIfNumEQ failed"
         end # if
         @num_of_checks += 1;
-    end # def testEQ
+    end # def checkIfStrEQ
 
-    def testIfStrNE(a, b, line = __LINE__, file = __FILE__)
+    def checkIfStrNE(a, b, line = __LINE__, file = __FILE__)
         raise ArgumentError, '\'a\' argument is not a String' unless a.is_a? String
         raise ArgumentError, '\'b\' argument is not a String' unless b.is_a? String
 
@@ -91,7 +89,7 @@ class SR_Test
             raise SR_CheckError, "checkIfNumEQ failed"
         end # if
         @num_of_checks += 1;
-    end # def testEQ
+    end # def checkIfStrNE
 
     def run()
         puts "SR Start test group >> '#{@name}'\n\n"
