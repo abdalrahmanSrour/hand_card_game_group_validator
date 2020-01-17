@@ -37,7 +37,7 @@ module CardRank
     def strToRank(c)
         raise ArgumentError, '\'c\' argument is not a string' unless c.is_a? String
         case c
-            when "A"
+            when "A", "a"
                 return CardRank::CARD_RANK_A;
             when "2"
                 return CardRank::CARD_RANK_2;
@@ -128,5 +128,12 @@ class Card
         @suit = CardSuitFactory.strToSuit(name[1, 1]);
         puts name
     end # initialize
+
+    def rank
+        @rank
+    end
+    def suit
+        @suit
+    end
 
 end # class Card
