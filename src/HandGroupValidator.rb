@@ -125,12 +125,23 @@ def validSameRankGroup(cards)
     return true
 end # validSameRankGroup
 
-def validSameSuitGroupRec(cards, index)
+def convertJokersRec(cards, slop, index, prev)
     if index == cards.count # last!
-        return true
+        return CardSuit::CARD_RANK_UNDEFINED
     end
 
     c = cards[index]
+
+    if c.suit == CardSuit::CARD_SUIT_JOKER
+        if prev == CardSuit::CARD_RANK_UNDEFINED
+            nextc = convertJokersRec(cards, slop, index + 1, prev);
+            if nextc != CardSuit::CARD_RANK_UNDEFINED
+                
+            end
+        else
+        end
+    else
+    end
 
     if index == 0 # first one
         if c.suit != CardSuit::CARD_SUIT_JOKER
@@ -138,32 +149,109 @@ def validSameSuitGroupRec(cards, index)
     end
 end
 
+def validAdjacent(rank1, rank2, diff)
+    if rank2 == CardRank::CARD_RANK_A
+        if diff == 1 and rank1 == CardRank::CARD_RANK_K
+            return true
+        end
+        return false # no other options
+    end
+    d = rank2 - rank1
+    if d == diff
+        return true
+    end
+    return false
+end
+
+def nextValidAdjacent(rank)
+    if rank == CardRank::CARD_RANK_K
+        return CardRank::CARD_RANK_A
+    end
+    return rank + 1
+end
+
+def prevValidAdjacent(rank)
+    if rank == CardRank::CARD_RANK_A
+        return CardRank::CARD_RANK_K
+    end
+    return rank - 1
+end
+
 def validSameSuitGroup(cards)
     raise unless caller[0].split(':')[0] == __FILE__
     raise ArgumentError, '\'cards\' argument is not an Array' unless cards.is_a? Array
 
-    prev = 0;
+    ii = 0
     cards.each do |c|
+        if ii != 0 && ii != (cards.count - 1) && c.rank == CardRank::CARD_RANK_A
+            # A must be first or last card; can't be in the middle!
+            return false
+        end
+        ii += 1;
+    end
+
+    prev = nil;
+    slop = 0;
+    prevJ = 0;
+    cards.each do |c|
+        # if prev; puts "prev #{prev.name}" end
+        # puts "slop #{slop}, prevJ #{prevJ}"
+        # puts "c=#{c.name}"
         if c.suit != CardSuit::CARD_SUIT_JOKER
-            if prev == 0
-                
+            if prev == nil
+                # skip
+            elsif slop == 0
+                diff = 1 + prevJ;
+                if validAdjacent(c.rank, prev.rank, diff) # prev after c
+                    slop = -1
+                elsif validAdjacent(prev.rank, c.rank, diff)
+                    slop = 1
+                else # not valid adjacent
+                    return false
+                end
+            else # slop already found
+                diff = 1 + prevJ
+                if slop == 1
+                    if !validAdjacent(prev.rank, c.rank, diff)
+                        return false
+                    end
+                else # slop == -1
+                    if !validAdjacent(c.rank, prev.rank, diff) # prev after c
+                        return false
+                    end
+                end
+            end
+            prev = c;
+            prevJ = 0; # always ignore previouse jokers
+        else
+            prevJ += 1;
         end
     end
 
-    cards.each do |c|
-        if c.suit == CardSuit::CARD_SUIT_JOKER
-            # skip
-        elsif $suit == CardRank::CARD_RANK_UNDEFINED
-            # something wrong this should never happened
-            puts "E: Invalid card name=#{c.name}";
-            return false
-        else
-            if $suits[c.suit] > 0
-                return false
-            end # if
-            $suits[c.suit] += 1;
-        end # if
-    end # cards.each
+    # if slop == 0 # only if no adjacent non-joker cards
+    #     return true # always valid!
+    # else
+    #     # convert jokers to correct card
+    #     convertJokersRec(cards, slop, 0, 0);
+
+    #     # check if valid sequance
+
+    # end
+
+    # cards.each do |c|
+    #     if c.suit == CardSuit::CARD_SUIT_JOKER
+    #         # skip
+    #     elsif $suit == CardRank::CARD_RANK_UNDEFINED
+    #         # something wrong this should never happened
+    #         puts "E: Invalid card name=#{c.name}";
+    #         return false
+    #     else
+    #         if $suits[c.suit] > 0
+    #             return false
+    #         end # if
+    #         $suits[c.suit] += 1;
+    #     end # if
+    # end # cards.each
 
     return true
 end # validSameSuitGroup
@@ -188,13 +276,11 @@ def handValidateCardGroup(group)
 
     # check if group of same suit or sequance
     if isSameRank($cards)
-        puts "Same Rank"
         if !validSameRankGroup($cards)
             puts "E: Invalid group!"
             return false
         end
     elsif isSameSuit($cards)
-        puts "Same Suit"
         if !validSameSuitGroup($cards)
             puts "E: Invalid group!"
             return false
