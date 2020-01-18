@@ -124,21 +124,26 @@ end # class CardSuitFactory
 
 class Card
     def initialize(name)
+        setName(name)
+    end # initialize
+
+    def setName(name)
         raise ArgumentError, '\'name\' argument is not a string' unless name.is_a? String
-        raise ArgumentError, "'name' argument is not a valid cc = #{name.length}" unless name.length == 2
+        raise ArgumentError, "'name' argument is not a valid cc = #{name.length}" unless name.length >= 2 and name.length <= 3
 
         @name = name;
-        @suit = CardSuitFactory.strToSuit(name[1, 1]);
+        s_start = name.length - 1;
+        @suit = CardSuitFactory.strToSuit(name[s_start, 1]);
         if @suit == CardSuit::CARD_SUIT_JOKER
-            if name[0, 1] != "1" && name[0, 1] != "2"
+            if name[0, s_start] != "1" && name[0, s_start] != "2"
                 raise ArgumentError, "'name' argument is not a valid Joker"
             end # if
 
             @rank = CardRank::CARD_RANK_UNDEFINED;
         else
-            @rank = CardRankFactory.strToRank(name[0, 1]);
+            @rank = CardRankFactory.strToRank(name[0, s_start]);
         end # if
-    end # initialize
+    end
 
     def name
         @name
