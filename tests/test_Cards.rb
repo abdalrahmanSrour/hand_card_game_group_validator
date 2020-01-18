@@ -82,7 +82,7 @@ def test_Card(test)
     test.checkIf($card);
     test.checkIfIntEQ($card.rank, CardRank::CARD_RANK_UNDEFINED);
     test.checkIfIntEQ($card.suit, CardSuit::CARD_SUIT_JOKER);
-    ["Ah", "AC", "As", "3h", "4h", "5h", "6h", "7h"].each do |d|
+    ["Ah", "AC", "As", "3h", "4h", "5h", "6h", "7h", "10h", "10d", "10c"].each do |d|
         $card = Card.new(d);
         test.checkIf($card);
         test.checkIfIntNE($card.rank, CardRank::CARD_RANK_UNDEFINED);
